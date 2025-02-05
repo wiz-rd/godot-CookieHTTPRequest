@@ -278,7 +278,7 @@ func _verify_and_parse_max_age(max_age: String, process_time: int):
 	if (max_age[0] == "+" or !max_age.is_valid_int()):
 		CookieDebug.push_debug(CookieDebug.LEVEL.WARN, "Max-Age", "value is malformed, discarding attribute")
 		return null
-	var delta_seconds = min(max_age, MAXIMUM_COOKIE_DELTA)
+	var delta_seconds = min(int(max_age), MAXIMUM_COOKIE_DELTA)
 	if (delta_seconds <= 0):
 		# I'm not figuring out the earliest representable time in Godot, I'm just setting it to epoch.
 		return 0

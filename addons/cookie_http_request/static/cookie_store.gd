@@ -1,7 +1,7 @@
 class_name HTTPCookieStore
 
 
-static var _cookies: Array = []
+static var _storedCookies: Array = []
 
 
 # Function to create a cookie head
@@ -25,15 +25,15 @@ static func store_cookies(cookies: Array, request_url: String) -> void:
 		# Look for update cookie
 		var update_cookie_index = _get_matching_cookie_index(cookie)
 		if (update_cookie_index != null):
-			var update_cookie = _cookies[update_cookie_index]
+			var update_cookie = _storedCookies[update_cookie_index]
 			cookie.creation_time = update_cookie.creation_time
-			cookies.remove_at(update_cookie_index)
-		_cookies.push_back(cookie)
+			_storedCookies.remove_at(update_cookie_index)
+		_storedCookies.push_back(cookie)
 
 
 # Checks to see if a cookie is trying to update a secure cookie
 static func _check_for_cookie_fix_attack(check_cookie: Dictionary) -> bool:
-	for stored_cookie in _cookies:
+	for stored_cookie in _storedCookies:
 		if (check_cookie.name == stored_cookie.name and stored_cookie.secure_only_flag):
 			if (HTTPUtils.domain_match(check_cookie.domain, stored_cookie.domain) or HTTPUtils.domain_match(stored_cookie.domain, check_cookie.domain)):
 				if (HTTPUtils.path_match(check_cookie.path, stored_cookie.path)):
@@ -44,8 +44,8 @@ static func _check_for_cookie_fix_attack(check_cookie: Dictionary) -> bool:
 # Gets a matching cookie from the store, otherwise returns null
 # No return type since GDscript doesn't have nullable types yet: https://github.com/godotengine/godot-proposals/issues/162
 static func _get_matching_cookie_index(cookie: Dictionary):
-	for i in range(0, _cookies.size()-1, 1):
-		var stored_cookie = _cookies[i]
+	for i in range(0, _storedCookies.size()-1, 1):
+		var stored_cookie = _storedCookies[i]
 		if(cookie.name == stored_cookie.name and cookie.domain == stored_cookie.domain and cookie.http_only_flag == stored_cookie.http_only_flag and cookie.path == stored_cookie.path):
 			return i
 	return null
@@ -59,10 +59,10 @@ static func _retrieve_cookies_for_header(request_url: String) -> Array:
 	var process_time := int(roundf(Time.get_unix_time_from_system()))
 	var request_domain = HTTPUtils.get_url_domain(request_url)
 	var request_path = HTTPUtils.get_url_path(request_url)
-	for i in range(_cookies.size() - 1, -1, -1):
-		var cookie = _cookies[i]
+	for i in range(_storedCookies.size() - 1, -1, -1):
+		var cookie = _storedCookies[i]
 		if (cookie.get("persistant_flag") and cookie.get("expiry_time", HTTPUtils.MAX_SECONDS) < process_time):
-			_cookies.remove_at(i)
+			_storedCookies.remove_at(i)
 			continue
 		# Retrieval check
 		# Skipping http_only_flag check because there's no way for me to ensure this comes from a CookieHTTPRequest, end user can change code. 

@@ -49,7 +49,9 @@ func _ready():
 
 # Override for `HTTPRequest` `request` method, attaches relevant cookies from cookie store and handles data and blocking for processing set_cookies
 func cookie_request(url: String, custom_headers:= PackedStringArray(), method:= HTTPClient.Method.METHOD_GET, request_data:= "") -> Error:
-	print("in override function")
+	# commented this print statement out
+	# @wiz-rd
+	# print("in override function")
 	# Check if _current_request_url is set, means it's still processing last request
 	if (_current_request_url != null):
 		return ERR_BUSY

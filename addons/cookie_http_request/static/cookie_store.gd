@@ -33,7 +33,7 @@ static func store_cookies(cookies: Array, request_url: String) -> void:
 
 		# for some reason the original author, Omn1core,
 		# never removed the "set-cookie" portion of cookies...
-		new_cookie.name = new_cookie.name.trim_prefix("set-new_cookie: ")
+		new_cookie.name = new_cookie.name.trim_prefix("set-cookie: ")
 		# this causes a weird issue where the entire cookie name is,
 		# for example, "set-cookie: session" instead of just "session"
 		# which causes servers to endlessly create sessions
